@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árbol de problemas · Gestión posconsumo de BUPA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/commons/0/0a/Logotipo_de_la_Universidad_Nacional_de_Colombia.svg?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" type="image/x-icon">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- =====================================================================
+     DATOS DEL ÁRBOL — EDITA AQUÍ PARA GENERAR UNA NUEVA VERSIÓN
+     ---------------------------------------------------------------------
+     · meta: versión, fecha y textos del encabezado y del pie del PDF.
+     · nodos: P (problema), E1… (efectos), C1… (causas directas) y
+       C1.1… (causas indirectas). El padre de cada causa indirecta se
+       deduce del código (C2.3 cuelga de C2).
+     · area: Química, Mecánica, Sistemas o Transversal (solo causas).
+     · why: justificación tal como aparece en el documento de soporte.
+       Los números entre corchetes [n] se enlazan con "refs".
+     · refs: referencias en formato IEEE del documento de soporte.
+     Fuente única: «Análisis del problema – Versión 2».
+     ===================================================================== -->
+<script>
+const DATA = {
+  "meta": {
+    "version": "2.0",
+    "fecha": "12 oct. 2026",
+    "curso": "Gerencia y Gestión de proyectos 2026-2",
+    "equipo": "Equipo 6",
+    "institucion": "Universidad Nacional de Colombia · Facultad de Ingeniería",
+    "proyecto": "Gestión posconsumo de BUPA en Bogotá y Soacha",
+    "notaPie": "El sustento y las fuentes de cada elemento están en el documento «Análisis del problema – Versión 2», secciones 3 a 7."
+  },
+  "nodos": [
+    {"id": "P", "titulo": "Gestión informal e ineficiente del proceso posconsumo de las baterías de plomo-ácido en Bogotá y Soacha", "why": "Describe la situación negativa del proceso posconsumo de las baterías usadas plomo ácido (BUPA) [1]: lo que ocurre desde que una batería se desecha al final de su vida útil hasta su aprovechamiento, con la participación de usuarios, establecimientos de cambio, transportadores, gestores licenciados y autoridades [1]. En él convergen las causas de orden económico, informativo, operativo y químico, y de él se derivan los efectos sobre la salud, el ambiente y el cumplimiento regulatorio. Esto ocurre aun cuando Colombia cuenta, desde 2026, con un régimen de Responsabilidad Extendida del Productor para las BUPA [1]. Territorio: Bogotá registró un parque automotor de 2,6 millones de vehículos en 2024 [2], dentro de 21,3 millones de vehículos activos en el país al cierre de 2025 [3], y Soacha ha sido señalado como lugar de aprovechamiento del plomo de esas baterías, en parte de manera informal [4][5][6]; ambos forman un mismo circuito. Informal: parte de las BUPA sale del sistema autorizado hacia compradores ambulantes, chatarrerías y fundidoras sin licencia [6][7][8][5]. Ineficiente: dentro del canal formal, el recorrido de cada batería es lento y difícil de demostrar [1][9]."},
+    {"id": "E1", "titulo": "Intoxicación por plomo en trabajadores informales, sus familias y comunidades vecinas", "why": "El reciclaje informal expone al plomo a trabajadores, a sus familias y a las comunidades vecinas. En Soacha y Bogotá, los 32 niños examinados que vivían con un adulto dedicado al reciclaje informal de baterías presentaron niveles de plomo en sangre de dos a nueve veces el máximo aceptable, y los niveles fueron mayores cuando el reciclaje se hacía dentro de la vivienda [6]. En Cundinamarca, los trabajadores informales del reciclaje de baterías tuvieron niveles de plomo en sangre mayores que la población no expuesta [19]. El plomo es un tóxico acumulativo, especialmente dañino en niños [12]."},
+    {"id": "E2", "titulo": "Contaminación del aire, los suelos y las viviendas con plomo y ácido sulfúrico", "why": "El plomo y el ácido sulfúrico pueden causar daños irreversibles en el ambiente [13], y el reciclaje de baterías es una causa importante de contaminación ambiental [12]. El diagnóstico elaborado para la Secretaría Distrital de Ambiente sobre las baterías usadas de Bogotá identificó, en el aprovechamiento de baja tecnología, contaminación del aire por emisiones de plomo y contaminación del suelo y del agua por deposición de partículas de plomo, descarga de escoria y del electrolito [4]. En Soacha y Bogotá, parte del reciclaje informal se realizaba dentro de las viviendas, donde los niños presentaron los niveles más altos de plomo [6]. En Soacha, además, se han medido concentraciones de plomo en partículas atmosféricas de las vías que superan los límites de referencia por inhalación, aunque ese estudio no atribuye el plomo a una fuente específica [26]."},
+    {"id": "E3", "titulo": "Pérdida de volumen de las BUPA de los gestores licenciados frente a los compradores informales", "why": "Cada BUPA que capta el canal informal deja de llegar a un gestor licenciado. En Bogotá, ese canal ofrece pago de contado por las baterías [8], y en Soacha y sus alrededores operan fundiciones informales de plomo de baterías [5]. El diagnóstico distrital de alrededor del año 2000 ya describía pequeñas y medianas empresas de aprovechamiento que operaban en el mercado de manera informal [4]. A nivel nacional, en 2024 los planes posconsumo de BUPA validaron 405.383 unidades menos que su meta [27]. No se encontró una cifra pública reciente del volumen que capta el canal informal en Bogotá y Soacha, y el indicador distrital de baterías recolectadas figura como finalizado desde 2024 [16], lo que también refleja la fragmentación descrita en C2."},
+    {"id": "E4", "titulo": "Incumplimiento de las metas de recolección de BUPA exigidas a los productores", "why": "La meta de recolección es la cantidad mínima de BUPA que los productores deben recolectar y gestionar cada año, y es de alcance nacional. Según la ANLA, en 2024 los planes posconsumo de baterías plomo ácido validaron 2.804.844 unidades frente a una meta de 3.210.227, con un cumplimiento del 87,37 % [27]. La cifra validada además bajó respecto a las 3.077.275 unidades de 2023 [27]. Bogotá registró un parque automotor de 2,6 millones de vehículos en 2024 [2]; por ese tamaño, lo que ocurra con las BUPA de la ciudad y su circuito con Soacha incide en ese cumplimiento. Desde 2026 rige la Resolución 0799, con un nuevo indicador de recolección y gestión [1]."},
+    {"id": "C1", "titulo": "La batería usada se paga mejor en el canal informal que en el formal", "area": "Transversal", "why": "La Resolución 0799 de 2025 obliga a los comercializadores a recibir las BUPA sin costo para el usuario [1], pero no contempla un pago en dinero para quien la entrega, ya sea el usuario o el establecimiento. En contraste, en Bogotá existe un mercado abierto de compradores que ofrecen pagar de contado por la batería usada, como lo muestra la oferta pública de chatarrerías de la ciudad [8]. Parte de estos compradores puede ofrecer ese pago porque opera sin asumir los costos de cumplimiento ambiental: en Soacha y sus alrededores se han documentado fundiciones de plomo de baterías que operan con hornos artesanales y de manera informal [5]. Para una persona que tenga una BUPA en la mano, el canal informal resulta económicamente más atractivo que el formal."},
+    {"id": "C1.1", "titulo": "Los compradores y fundidores informales operan sin licencia y sin asumir los costos de cumplimiento ambiental", "area": "Química", "why": "Los compradores y fundidores informales operan sin licencia ambiental ni permisos, por lo que no asumen costos de control de emisiones, manejo de residuos ni seguridad laboral. En Soacha, un trabajo de grado de 2018 describió industrias de fundición de plomo de baterías que operan con hornos cubilote en su mayoría artesanales, de manera informal e incumpliendo la normatividad [5]. En hogares de Soacha y Bogotá, el reciclaje de baterías se realizaba de forma artesanal y, en ocasiones, dentro de las propias viviendas [6]. Operar sin esos costos les permite pagar más por cada batería."},
+    {"id": "C1.2", "titulo": "La devolución formal es gratuita y no reporta un pago en dinero a quien entrega la batería", "area": "Transversal", "why": "La norma obliga a recibir las BUPA sin costo para el usuario [1], pero no prevé un pago por entregarlas. El sistema colectivo Recoenergy ofrece a los comercializadores vinculados un plan de puntos redimibles por premios [10], que no es un pago en dinero, a diferencia del pago de contado que ofrece el comprador informal [8]. El establecimiento, además, asume el almacenamiento y el control mensual de entradas y salidas sin compensación [1]. Un análisis de los programas posconsumo en Bogotá identificó la falta de incentivos para el usuario final como uno de sus desafíos [11]."},
+    {"id": "C1.3", "titulo": "El plomo de la batería usada conserva un alto valor en el mercado", "area": "Transversal", "why": "La fabricación de baterías de plomo-ácido concentra cerca del 85 % de la demanda mundial de plomo refinado, y buena parte se abastece con plomo reciclado de estas mismas baterías [12]. Por eso la BUPA siempre tiene comprador. El proyecto no puede modificar este factor; en la Matriz de Marco Lógico se tratará como supuesto."},
+    {"id": "C2", "titulo": "La información de la cadena está fragmentada entre actores y registros", "area": "Sistemas", "why": "La trazabilidad de las BUPA descansa en los certificados de gestión que emiten los gestores licenciados [13]. Sin embargo, cada actor registra su parte de la cadena por separado: los establecimientos llevan su propio control de entradas y salidas, los gestores expiden certificados desde sus propios sistemas [1] y el módulo de gestores del RUA no incluye la etapa de transporte [9]. Como resultado, la información no se encuentra en un solo lugar y su validación depende de canales manuales. Por ejemplo, la constancia que expide Recoenergy a los establecimientos vinculados indica que su validez debe confirmarse por vía telefónica [14]. Estos registros y certificados son de alcance nacional, por lo que la situación es la misma en Bogotá y en Soacha."},
+    {"id": "C2.1", "titulo": "Establecimientos y gestores registran su parte de la cadena en formatos y sistemas propios", "area": "Sistemas", "why": "Cada establecimiento lleva su propio control mensual de ingreso y salida de BUPA, en formato físico o electrónico, y cada gestor expide los certificados desde sus propios sistemas, con plazos de hasta 90 días hábiles [1]. Esa información no se consolida en ningún punto común de consulta."},
+    {"id": "C2.2", "titulo": "La etapa de transporte queda por fuera del registro RUA", "area": "Sistemas", "why": "El módulo de gestores del Registro Único Ambiental del IDEAM no incluye la actividad de transporte [9]. El transportador solo queda identificado en el certificado que el gestor emite al final del ciclo [1], por lo que el tramo entre el establecimiento y la planta no se registra mientras ocurre."},
+    {"id": "C2.3", "titulo": "Las entidades públicas administran registros separados sobre la misma cadena", "area": "Sistemas", "why": "Los productores presentan sus sistemas de recolección ante la ANLA a través de VITAL, y deben entregar un informe anual [15][1]. La información de residuos peligrosos, en cambio, se reporta al IDEAM mediante el RUA [9]. Son registros distintos, de periodicidad anual, que no permiten seguir una misma batería entre ellos. En el nivel distrital, el indicador del Observatorio Ambiental de Bogotá sobre los kilogramos de baterías plomo ácido recolectados por programas posconsumo en la ciudad figura como finalizado desde abril de 2024 [16]."},
+    {"id": "C3", "titulo": "La recolección formal es poco accesible para los pequeños generadores", "area": "Mecánica", "why": "La red formal combina puntos fijos de recolección para el usuario final con un canal institucional de recogida para establecimientos y empresas [10][17]. En Bogotá, el usuario debe ubicar el punto fijo más cercano en el visor geográfico de la Secretaría Distrital de Ambiente, y las empresas pueden gestionar sus baterías por solicitud o en jornadas periódicas como la Reciclatón [17][18]. Para los establecimientos, la recogida exige un mínimo de 15 unidades o 30 kg y puede tardar entre 8 y 15 días hábiles [10]. Para un establecimiento pequeño, esto implica acumular residuos peligrosos durante semanas, mientras el comprador informal paga de contado por cada batería [8]."},
+    {"id": "C3.1", "titulo": "La recolección exige un mínimo de 15 unidades o 30 kg por solicitud", "area": "Mecánica", "why": "Recoenergy atiende solicitudes de recolección a partir de 15 unidades o 30 kg de baterías usadas [10]. Un establecimiento pequeño debe acumular residuos peligrosos hasta alcanzar ese volumen antes de poder solicitar la recogida."},
+    {"id": "C3.2", "titulo": "La recogida tarda entre 8 y 15 días hábiles desde la solicitud", "area": "Mecánica", "why": "Una vez solicitada, la recolección puede tardar entre 8 y 15 días hábiles, según la ubicación del establecimiento [10]. Durante ese tiempo la batería permanece en el establecimiento, mientras existen compradores que la pagan de contado [8]."},
+    {"id": "C3.3", "titulo": "La solicitud de recolección exige un trámite previo de formulario y validación", "area": "Mecánica", "why": "Para solicitar la recogida, el establecimiento debe diligenciar un formulario y enviarlo por correo; los datos se validan y la solicitud solo se procesa si la empresa cumple los requisitos [10]. El canal institucional de la Secretaría Distrital de Ambiente también exige informar por correo el tipo de residuo, la cantidad de unidades y el peso [17], y en la Reciclatón Distrital Empresarial las empresas deben registrarse con anticipación para recibir fecha y hora de entrega [18]. Cada uno de estos pasos ocurre antes de que la batería salga del establecimiento."},
+    {"id": "C4", "titulo": "Usuarios y trabajadores subestiman el riesgo químico de las BUPA", "area": "Química", "why": "El plomo y el ácido sulfúrico de las baterías son sustancias altamente tóxicas, capaces de causar daños irreversibles en la salud y el ambiente [13]. Aun así, quienes manipulan las BUPA en el sector informal no dimensionan ese riesgo. En un estudio con trabajadores informales de reciclaje de baterías en Cundinamarca, el nivel educativo y el uso de elementos de protección personal fueron predictores significativos de los niveles de plomo en sangre [19]. Un estudio del mismo grupo de investigación, con 120 trabajadores informales, concluyó que estos desconocen los riesgos de la exposición crónica y silenciosa al plomo [20]. En Soacha y Bogotá, parte de este reciclaje se hacía dentro de las viviendas, donde vivían niños [6]. Esa baja percepción del riesgo explica por qué la batería se entrega a cualquier comprador y se manipula sin protección."},
+    {"id": "C4.1", "titulo": "La información sobre el manejo de las BUPA se encuentra repartida entre varios actores obligados y llega de forma discontinua", "area": "Química", "why": "La Resolución 0799 asigna la obligación de informar a productores, comercializadores, autoridades ambientales y entidades territoriales [1], sin un canal común entre ellos. En Bogotá, los puntos de entrega se consultan en el visor geográfico de la Secretaría Distrital de Ambiente [17], separados de los que publica cada sistema colectivo [10]. La aplicación Red PosConsumo, que el Ministerio lanzó en 2014 para ubicar puntos de recolección [21], ya no se encuentra disponible en las tiendas de aplicaciones (verificación del equipo, 2026), lo que muestra la discontinuidad de estos esfuerzos."},
+    {"id": "C4.2", "titulo": "Los efectos del plomo en la salud son crónicos y poco visibles en el corto plazo", "area": "Química", "why": "La intoxicación por plomo suele ser un trastorno crónico que puede no producir síntomas agudos, y como sus síntomas son inespecíficos, el diagnóstico a menudo se retrasa [22]. Quien manipula baterías no percibe un daño inmediato y, por eso, subestima el riesgo."},
+    {"id": "C4.3", "titulo": "Los trabajadores informales tienen bajo nivel educativo y desconocen el riesgo de la exposición crónica", "area": "Química", "why": "En trabajadores informales de reciclaje de baterías de Cundinamarca, el nivel educativo fue un predictor significativo de los niveles de plomo en sangre [19]. Un estudio del mismo grupo de investigación concluyó que estos trabajadores desconocen los riesgos de la exposición crónica y recomendó intervenciones culturalmente significativas [20]."},
+    {"id": "C5", "titulo": "El control de las autoridades sobre la cadena de las BUPA es reactivo", "area": "Transversal", "why": "Se entiende por control reactivo aquel que actúa después de que el daño ya ocurrió o se hizo visible, en lugar de prevenirlo. El caso documentado en Soacha lo ilustra: el problema se conoció en septiembre de 2004, cuando una niña ingresó a un hospital de Soacha con una fractura patológica y niveles tóxicos de plomo en sangre; solo entonces la visita a su vivienda reveló que sus padres reciclaban baterías de manera informal y permitió identificar otros hogares en la misma situación [6]. En febrero de 2026, tras una visita técnica, la CAR suspendió tres fundidoras en Soacha cuyos hornos operaban sin permiso de emisiones atmosféricas ni registro como generadoras de residuos peligrosos; la fuente no precisa qué metal se fundía [23]. El marco actual mantiene esta lógica: la información de los establecimientos se verifica cuando la autoridad realiza actividades de control (art. 20) y las autoridades ambientales tienen dos años para caracterizar la informalidad en su jurisdicción (art. 23) [1]."},
+    {"id": "C5.1", "titulo": "El cumplimiento de los establecimientos solo se verifica durante visitas de control", "area": "Transversal", "why": "La norma establece que la autoridad ambiental urbana o regional podrá verificar el control mensual de los establecimientos [1]. El Ministerio anunció que se intensificará el control en servitecas, talleres y otros puntos de cambio [13]; en ambos casos, la verificación depende de visitas presenciales y no de un seguimiento continuo."},
+    {"id": "C5.2", "titulo": "Las autoridades ambientales aún no han caracterizado la informalidad en su jurisdicción", "area": "Transversal", "why": "La Resolución 0799 da a las autoridades ambientales dos años desde su entrada en vigencia, en 2026, para elaborar un diagnóstico del manejo de BUPA en su jurisdicción, incluida la caracterización de la informalidad [1]. En este territorio esa tarea corresponde a la Secretaría Distrital de Ambiente en Bogotá y a la CAR en Soacha (ver C5.3). Mientras tanto, el control se ejerce sin conocer la magnitud del problema."},
+    {"id": "C5.3", "titulo": "La vigilancia de la cadena se reparte entre dos autoridades ambientales con jurisdicciones distintas", "area": "Transversal", "why": "Por mandato de la Ley 99 de 1993, en el perímetro urbano de los distritos con población urbana igual o superior a un millón de habitantes, las funciones de autoridad ambiental las ejerce el propio distrito [24]. En Bogotá, la Secretaría Distrital de Ambiente realiza los operativos de control a la industria [25] y gestiona el canal institucional de entrega de BUPA [17]. En Soacha, en cambio, el control lo ejerce la CAR, como muestran sus actuaciones sobre fundidoras en ese municipio [23]. Así, una misma batería puede desecharse bajo una jurisdicción y fundirse bajo la otra [4][6], y cada autoridad vigila solo su tramo de la cadena."}
+  ],
+  "refs": {
+    "1": "Ministerio de Ambiente y Desarrollo Sostenible, \"Resolución 0799 de 2025: Por la cual se reglamentan los Sistemas de Recolección y Gestión de las Baterías Usadas Plomo Ácido – BUPA y se dictan otras disposiciones,\" Bogotá, D.C., Colombia, 17 jun. 2025. [En línea]. Disponible en: https://www.minambiente.gov.co/wp-content/uploads/2025/08/RES.-0799-DE-17-JUN-2025-BUPA.pdf",
+    "2": "Secretaría Distrital de Hacienda, \"Diagnóstico del impuesto de vehículos automotores,\" Notas de Hacienda Distrital, Observatorio Fiscal de Bogotá, Bogotá, D.C., Colombia, dic. 2025. [En línea]. Disponible en: https://observatoriofiscal.shd.gov.co/sites/default/files/documentos_informacion_destacada/Primera%20Nota%20de%20Hacienda%20Distrital.pdf",
+    "3": "Registro Único Nacional de Tránsito (RUNT), \"Boletín de Prensa 001 de 2026: Balance del sector de tránsito y transporte,\" Bogotá, D.C., Colombia, 27 feb. 2026. [En línea]. Disponible en: https://www.runt.gov.co/sites/default/files/Bolet%C3%ADn%20001%20de%202026.pdf",
+    "4": "Unión Temporal OCADE Ltda.–SANIPLAN–Ambiental S.A., \"Diagnóstico ambiental sobre el manejo actual de baterías usadas generadas por el mantenimiento del parque automotor de Santa Fe de Bogotá: resumen ejecutivo,\" contrato PNUD n.º 9992041, Bogotá, D.C., Colombia, s.f. (c. 2000). Publicado por la Secretaría Distrital de Ambiente. [En línea]. Disponible en: https://www.ambientebogota.gov.co/documents/10184/507199/Diagn%C3%B3stico+ambiental+sobre+el+manejo+actual+de+bater%C3%ADas+usadas+generadas+por+el+mantenimiento.pdf/12535be9-b31f-48cf-ae45-821f78fe6bbc. Consultado: 12 oct. 2026.",
+    "5": "D. A. Calderón Mejía y Y. V. Corchuelo Burgos, \"Rediseño de un horno fundidor de plomo (Pb) que contribuya a la disminución de los riesgos laborales y ambientales en empresas de baterías ácido-plomo de Soacha Cundinamarca,\" trabajo de grado, Ingeniería Industrial, Universidad de Cundinamarca, Soacha, Colombia, 2018. [En línea]. Disponible en: https://repositorio.ucundinamarca.edu.co/items/9f3ae5b7-6eeb-49fb-9674-172566b14157/full",
+    "6": "J. Echeverry, C. M. Hurtado y M. Gutiérrez, \"Aspectos clínicos y niveles de plomo en niños expuestos de manera paraocupacional en el proceso de reciclaje de baterías de automóviles en las localidades de Soacha y Bogotá, D.C.,\" Biomédica, vol. 28, no. 1, pp. 116–125, mar. 2008. [En línea]. Disponible en: https://revistabiomedica.org/index.php/biomedica/article/view/114",
+    "7": "Ministerio de Ambiente y Desarrollo Sostenible, \"Baterías usadas plomo ácido.\" [En línea]. Disponible en: https://www.minambiente.gov.co/asuntos-ambientales-sectorial-y-urbana/baterias-usadas-plomo-acido/. Consultado: 12 oct. 2026.",
+    "8": "Chatarrerías Bogotá, \"Compra de baterías recicladas.\" [En línea]. Disponible en: https://www.chatarreriasbogota.com/compra-de-baterias-recicladas/. Consultado: 12 oct. 2026.",
+    "9": "Instituto de Hidrología, Meteorología y Estudios Ambientales (IDEAM), \"Validación información registro de gestores RESPEL,\" presentación, 10 may. 2024. [En línea]. Disponible en: https://cortolima.gov.co/images/2025/11/Jornada-de-capacitaci%C3%B3n/Presentaci%C3%B3n%20Informaci%C3%B3n%20Gestores%20Respel%20-%20Ideam%20jornada%20AA.pdf",
+    "10": "Corporación Recoenergy, \"Recolección de baterías.\" [En línea]. Disponible en: https://www.recoenergy.com.co/recoleccion-de-baterias/. Consultado: 12 oct. 2026.",
+    "11": "\"Análisis del impacto social y ambiental de los programas posconsumo en Bogotá,\" trabajo de grado, Tecnología en Gestión Ambiental y Servicios Públicos, Universidad Distrital Francisco José de Caldas, Bogotá, D.C., Colombia, s.f. [En línea]. Disponible en: https://repository.udistrital.edu.co/items/70571bc0-833e-49d6-b55b-07c8ddd095af",
+    "12": "World Health Organization, \"Recycling used lead-acid batteries: brief information for the health sector,\" Ginebra, Suiza, 2017. [En línea]. Disponible en: https://www.who.int/publications-detail-redirect/WHO-FWC-PHE-EPE-17.02",
+    "13": "Ministerio de Ambiente y Desarrollo Sostenible, \"Colombia regula la gestión responsable de baterías usadas,\" Bogotá, D.C., Colombia, 15 ago. 2025. [En línea]. Disponible en: https://www.minambiente.gov.co/colombia-regula-la-gestion-responsable-de-baterias-usadas/",
+    "14": "Corporación Recoenergy, \"Constancia de participación en el sistema de recolección selectiva Recoenergy – Autocars Ingeniería S.A.S.,\" Bogotá, D.C., Colombia, 31 ene. 2025. Publicado por Colombia Compra Eficiente. [En línea]. Disponible en: https://operaciones.colombiacompra.gov.co/sites/cce_public/files/documentos_adicionales_oc/94_coof_03_122037_23_0.pdf",
+    "15": "Autoridad Nacional de Licencias Ambientales (ANLA), \"BUPA – Preguntas frecuentes.\" [En línea]. Disponible en: https://www.anla.gov.co/tramites-y-servicios/permisos-tramites-ambientales/bupa-preguntas-frecuentes. Consultado: 1 oct. 2026.",
+    "16": "Observatorio Ambiental de Bogotá, Secretaría Distrital de Ambiente, \"Cantidad en kilogramos de residuos de baterías plomo ácido recolectados por programas posconsumo en Bogotá – Finalizado.\" [En línea]. Disponible en: https://oab.ambientebogota.gov.co/cantidad-en-kilogramos-de-residuos-de-baterias-plomo-acido-recolectados-por-programas-posconsumo-en-bogota/. Consultado: 12 oct. 2026.",
+    "17": "Secretaría Distrital de Ambiente, \"Baterías plomo - ácido.\" [En línea]. Disponible en: https://www.ambientebogota.gov.co/web/sda/baterias-plomo-acido. Consultado: 12 oct. 2026.",
+    "18": "\"Reciclatón de 2026 en Bogotá tendrá segunda edición: inscríbete y participa este 28 y 29 de octubre,\" Bogotá.gov.co, Alcaldía Mayor de Bogotá, Bogotá, D.C., Colombia, 6 oct. 2026. [En línea]. Disponible en: https://bogota.gov.co/mi-ciudad/ambiente/reciclaton-de-2026-en-bogota-inscribete-28-y-29-de-octubre",
+    "19": "S. M. Díaz, E. Téllez Avila, R. M. Palma, D. M. Narváez y M. Varona Uribe, \"Evaluación de la exposición a plomo en trabajadores informales colombianos que reciclan baterías,\" Revista de Salud Ambiental, jun. 2022. [En línea]. Disponible en: https://doaj.org/article/f29503cf68a3480484e8c002ee43d8f7",
+    "20": "M. Varona, S. M. Díaz-Criollo, R. M. Palma-Parra, A. J. Idrovo, E. M. Téllez Avila y D. Palencia Flórez, \"Does sulfuric acid have a 'protective' effect on battery recyclers exposed to lead?,\" International Journal of Environmental Health Research, vol. 31, no. 7, 2021, doi: 10.1080/09603123.2019.1687659. [En línea]. Disponible en: https://doi.org/10.1080/09603123.2019.1687659",
+    "21": "\"Minambiente amplió la cobertura de la app que le dice dónde dejar sus pilas viejas,\" El Espectador, Bogotá, D.C., Colombia. [En línea]. Disponible en: https://www.elespectador.com/ambiente/minambiente-amplio-la-cobertura-de-la-app-que-le-dice-donde-dejar-sus-pilas-viejas-article-750500/",
+    "22": "Manual MSD, \"Envenenamiento con plomo,\" versión para profesionales. [En línea]. Disponible en: https://www.msdmanuals.com/es/professional/lesiones-y-envenenamientos/intoxicación/envenenamiento-con-plomo",
+    "23": "J. C. Velásquez, \"Suspenden actividad de fundición a tres empresas en Soacha por contaminación del aire,\" Bogotá.gov.co, Alcaldía Mayor de Bogotá, Bogotá, D.C., Colombia, 10 feb. 2026. [En línea]. Disponible en: https://bogota.gov.co/cundinamarca/suspenden-empresas-en-soacha-por-contaminacion-del-aire",
+    "24": "Congreso de la República de Colombia, \"Ley 99 de 1993: Por la cual se crea el Ministerio del Medio Ambiente, se reordena el Sector Público encargado de la gestión y conservación del medio ambiente y los recursos naturales renovables, se organiza el Sistema Nacional Ambiental, SINA, y se dictan otras disposiciones,\" Diario Oficial n.º 41146, 22 dic. 1993, art. 66. [En línea]. Disponible en: https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=297",
+    "25": "\"Autoridades sellaron local industrial que contaminaba el aire de Bogotá,\" Bogotá.gov.co, Alcaldía Mayor de Bogotá, Bogotá, D.C., Colombia, 26 nov. 2022. [En línea]. Disponible en: https://bogota.gov.co/mi-ciudad/ambiente/operativos-establecimientos-industriales-en-la-localidad-de-bosa",
+    "26": "C. A. Zafra Mejía, L. G. Rodríguez Chitiva y Y. A. Torres Cabrera, \"Metales pesados asociados con las partículas atmosféricas y sedimentadas de superficies viales: Soacha (Colombia),\" Revista Científica, vol. 17, no. 1, pp. 113–124, 2013, doi: 10.14483/23448350.4571. [En línea]. Disponible en: https://revistas.udistrital.edu.co/index.php/revcie/article/view/4571",
+    "27": "Autoridad Nacional de Licencias Ambientales (ANLA), \"Informe de gestión Responsabilidad Extendida del Productor: corte 31 de diciembre de 2025 – vigencia 2024,\" Subdirección de Instrumentos, Permisos y Trámites Ambientales, Bogotá, D.C., Colombia, 31 jul. 2026. [En línea]. Disponible en: https://www.anla.gov.co/images/entidad/sipta/METAREP/2026-07-31-anla-Informe-Gestion-Responsabilidad-Extendida-Productor-2025.pdf"
+  }
+};
+</script>
+
+<style>
+:root{
+  --ink:#201e1d; --ink-2:#605d5d; --ink-3:#9b9797; --rule:#cfcccb; --rule-strong:#201e1d;
+  --paper:#ffffff; --accent:#ec3013; --accent-hover:#dd2b0f; --accent-press:#ae1800;
+  --eff-bg:#c1efc9; --eff-bd:#3b9555; --eff-fg:#04270f; --eff-sub:#115629;
+  --pro-bg:#6c4128; --pro-bd:#45240f; --pro-fg:#ffffff; --pro-sub:#ecd2be;
+  --dir-bg:#bbe7ff; --dir-bd:#2d86c8; --dir-fg:#002139; --dir-sub:#014b79;
+  --ind-bg:#ffd6b5; --ind-bd:#ba6826; --ind-fg:#341600; --ind-sub:#6f3600;
+  --shadow-sm:0 1px 2px rgba(45,43,43,.14);
+  --shadow-md:0 3px 10px rgba(45,43,43,.16);
+  --shadow-lg:0 12px 32px rgba(45,43,43,.22);
+  --font:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* — encabezado — */
+.top{position:fixed;top:0;left:0;right:0;height:64px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 24px;background:var(--paper);border-bottom:2px solid var(--rule-strong)}
+.brand{display:flex;align-items:center;gap:18px;min-width:0;flex:1}
+.brand-team{display:flex;align-items:center;gap:10px}
+.brand-team img{width:44px;height:44px;object-fit:contain;flex-shrink:0}
+.brand-team span{font-weight:800;font-size:14px;line-height:1.15;max-width:200px}
+.vrule{width:2px;height:30px;background:var(--rule)}
+.title{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.title small{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title strong{font-size:17px;font-weight:800;white-space:nowrap}
+.top-right{display:flex;align-items:center;gap:18px}
+.version{font-size:13px;color:var(--ink-2);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:1px solid transparent;background:transparent;font-weight:800;font-size:14px;line-height:1.2;padding:9px 15px;border-radius:0}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:active{background:var(--accent-press)}
+.btn-primary[disabled]{opacity:.6;cursor:progress}
+.btn-icon{width:44px;height:44px;padding:0;color:var(--accent)}
+.btn-icon:hover{background:rgba(236,48,19,.1)}
+
+/* — lienzo — */
+.viewport{position:fixed;top:64px;left:0;right:0;bottom:0;overflow:hidden;touch-action:none;cursor:grab;background:var(--paper)}
+.viewport.panning{cursor:grabbing}
+.world{position:absolute;left:0;top:0;transform-origin:0 0}
+.band-line{position:absolute;left:0;height:2px;background:var(--rule-strong)}
+.band-line.soft{background:var(--rule)}
+.band-label{position:absolute;left:0;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.band-label.soft{color:var(--ink-2)}
+.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+
+.node{position:absolute;display:flex;flex-direction:column;gap:6px;padding:14px 16px;border:2px solid;cursor:pointer;user-select:none;box-shadow:var(--shadow-sm);transition:box-shadow .2s,opacity .25s,transform .15s}
+.node:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.node.dragging{box-shadow:var(--shadow-lg);transform:rotate(-1.2deg) scale(1.03);transition:none;z-index:6}
+.node.selected{outline:3px solid var(--ink);outline-offset:2px;z-index:5}
+.node.dim{opacity:.26}
+.node .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.node .area{font-size:10px;letter-spacing:.06em;padding:1px 6px;border:1px solid currentColor;white-space:nowrap}
+.node .txt{font-weight:800;font-size:17px;line-height:1.22;text-wrap:pretty}
+.node.effect{background:var(--eff-bg);border-color:var(--eff-bd);color:var(--eff-fg)} .node.effect .meta{color:var(--eff-sub)}
+.node.direct{background:var(--dir-bg);border-color:var(--dir-bd);color:var(--dir-fg)} .node.direct .meta{color:var(--dir-sub)}
+.node.indirect{background:var(--ind-bg);border-color:var(--ind-bd);color:var(--ind-fg);padding:11px 13px;gap:4px} .node.indirect .meta{color:var(--ind-sub)}
+.node.indirect .txt{font-weight:600;font-size:14px;line-height:1.28}
+.node.problem{background:var(--pro-bg);border-color:var(--pro-bd);color:var(--pro-fg);padding:20px 24px;gap:10px}
+.node.problem .meta{color:var(--pro-sub);font-size:12px;font-weight:800;letter-spacing:.1em}
+.node.problem .txt{font-size:27px;line-height:1.1;letter-spacing:-.015em}
+
+/* — paneles flotantes — */
+.panel{position:fixed;z-index:10;background:var(--paper);border:2px solid var(--ink)}
+.guide{left:24px;bottom:24px;padding:12px 14px;max-width:560px;display:flex;flex-direction:column;gap:8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;font-weight:600}
+.legend div{display:flex;align-items:center;gap:8px}
+.sw{flex-shrink:0;width:14px;height:14px;border:2px solid}
+.zoom{right:24px;bottom:24px;display:flex;align-items:stretch}
+.zoom .pct{width:64px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border-left:2px solid var(--rule);border-right:2px solid var(--rule)}
+.zoom .reset{height:44px;border-left:2px solid var(--rule);padding:0 14px;color:var(--accent);font-size:13px}
+.hint{margin:0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.hint b{color:var(--ink)}
+
+.pop{position:fixed;z-index:30;width:360px;max-height:calc(100vh - 100px);overflow:auto;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow-lg);padding:16px 18px;display:none;flex-direction:column;gap:10px}
+.pop.open{display:flex}
+.pop-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.pop-kicker{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.pop-close{width:28px;height:28px}
+.pop-title{font-weight:800;font-size:18px;line-height:1.2}
+.pop-rule{height:2px;background:var(--rule)}
+.pop-sec{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.pop-text{font-size:14px;line-height:1.5;text-wrap:pretty}
+.pop-refs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.4;color:var(--ink-2)}
+.pop-refs b{color:var(--ink)}
+.pop-refs a{color:var(--accent-press);word-break:break-all}
+
+.toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:none}
+.toast.show{display:block}
+
+/* — hoja de exportación (fuera de pantalla) — */
+#sheet{position:fixed;left:-20000px;top:0;background:#fff;color:var(--ink);padding:56px 64px 40px}
+#sheet .s-head{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;padding-bottom:18px;border-bottom:3px solid var(--ink);margin-bottom:28px}
+#sheet .s-brand{display:flex;align-items:center;gap:18px}
+#sheet .s-brand img{width:72px;height:72px}
+#sheet .s-kicker{font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+#sheet h1{margin:2px 0 0;font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.02em}
+#sheet .s-meta{text-align:right;font-size:14px;line-height:1.5;color:var(--ink-2)}
+#sheet .s-meta b{color:var(--ink)}
+#sheet .s-legend{display:flex;gap:26px;font-size:14px;font-weight:600;margin-bottom:22px}
+#sheet .s-legend div{display:flex;align-items:center;gap:8px}
+#sheet .s-world{position:relative}
+#sheet .s-foot{margin-top:26px;padding-top:14px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;gap:40px;font-size:13px;color:var(--ink-2)}
+#sheet .node{box-shadow:none;transform:none;cursor:default}
+
+@media (max-width:820px){
+  .top{padding:0 12px;gap:10px}
+  .brand{gap:10px}
+  .brand-team span,.vrule,.version,.hint,.lbl-long{display:none}
+  .lbl-short{display:inline!important}
+  .title strong{font-size:15px}
+  .guide{left:12px;right:12px;bottom:68px;padding:8px 10px;max-width:none}
+  .legend{font-size:12px;gap:4px 14px}
+  .zoom{right:12px;bottom:12px}
+  .zoom .reset{padding:0 10px}
+  .pop{width:calc(100vw - 24px);left:12px!important}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="brand-team">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Logotipo_de_la_Universidad_Nacional_de_Colombia.svg?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" alt="Universidad Nacional de Colombia">
+      <span id="hdTeam"></span>
+    </div>
+    <div class="vrule"></div>
+    <div class="title"><small id="hdProject"></small><strong>Árbol de problemas</strong></div>
+  </div>
+  <div class="top-right">
+    <span class="version" id="hdVersion"></span>
+    <button class="btn btn-primary" id="btnPdf">
+      <span class="lbl-long">Descargar PDF</span><span class="lbl-short" style="display:none">PDF</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="viewport" id="vp" aria-label="Lienzo del árbol de problemas">
+  <div class="world" id="world"></div>
+</main>
+
+<aside class="panel guide" aria-label="Leyenda">
+  <div class="legend">
+    <div><span class="sw" style="background:var(--eff-bg);border-color:var(--eff-bd)"></span>Efectos</div>
+    <div><span class="sw" style="background:var(--pro-bg);border-color:var(--pro-bd)"></span>Problema central</div>
+    <div><span class="sw" style="background:var(--dir-bg);border-color:var(--dir-bd)"></span>Causa directa</div>
+    <div><span class="sw" style="background:var(--ind-bg);border-color:var(--ind-bd)"></span>Causa indirecta</div>
+  </div>
+  <p class="hint"><b>Clic en un elemento</b> para ver su cadena causal, su justificación y sus fuentes. Arrastra los elementos para reordenarlos y usa la rueda del ratón para acercar o alejar.</p>
+</aside>
+
+<div class="panel zoom">
+  <button class="btn btn-icon" id="zOut" aria-label="Alejar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+  <div class="pct" id="zPct">100%</div>
+  <button class="btn btn-icon" id="zIn" aria-label="Acercar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="btn reset" id="zReset">Restablecer vista</button>
+</div>
+
+<section class="pop" id="pop" role="dialog" aria-modal="false" aria-labelledby="popTitle">
+  <div class="pop-head">
+    <span class="pop-kicker" id="popKicker"></span>
+    <button class="btn btn-icon pop-close" id="popClose" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="pop-title" id="popTitle"></div>
+  <div class="pop-rule"></div>
+  <div class="pop-sec">Justificación</div>
+  <div class="pop-text" id="popText"></div>
+  <div class="pop-sec" id="popRefsHead">Fuentes</div>
+  <ul class="pop-refs" id="popRefs"></ul>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+<div id="sheet" aria-hidden="true"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- geometría del árbol ---------- */
+const COL_W = 300, COL_GAP = 28, MARGIN_L = 200, MARGIN_R = 40;
+const SIZE = { effect:[300,146], problem:[620,176], direct:[300,146], indirect:[274,122] };
+const IND_GAP = 14, IND_INDENT = 26, SPINE_OFF = 12;
+const COLORS = {
+  effect:  { bd:'#3b9555' }, problem:{ bd:'#45240f' },
+  direct:  { bd:'#2d86c8' }, indirect:{ bd:'#ba6826' }
+};
+const TYPE_LABEL = { effect:'Efecto', problem:'Problema central', direct:'Causa directa', indirect:'Causa indirecta' };
+
+const nodes = DATA.nodos.map(n => ({
+  ...n,
+  type: n.id === 'P' ? 'problem' : n.id.startsWith('E') ? 'effect' : n.id.includes('.') ? 'indirect' : 'direct',
+  parent: n.id.includes('.') ? n.id.split('.')[0] : null
+}));
+const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+const effects = nodes.filter(n => n.type === 'effect');
+const directs = nodes.filter(n => n.type === 'direct');
+const maxInd = Math.max(1, ...directs.map(d => nodes.filter(n => n.parent === d.id).length));
+
+const nCols = Math.max(directs.length, effects.length);
+const WORLD_W = MARGIN_L + MARGIN_R + nCols * COL_W + (nCols - 1) * COL_GAP;
+const CX = MARGIN_L + (WORLD_W - MARGIN_L - MARGIN_R) / 2;
+const ROW = { l1:24, effect:70, l2:256, problem:302, l3:520, direct:566, l4:754, indirect:800 };
+const WORLD_H = ROW.indirect + maxInd * SIZE.indirect[1] + (maxInd - 1) * IND_GAP + 30;
+
+/* aristas: causa → efecto (la flecha apunta hacia arriba) */
+const EDGES = [];
+nodes.forEach(n => {
+  if (n.type === 'indirect') EDGES.push([n.id, n.parent]);
+  if (n.type === 'direct') EDGES.push([n.id, 'P']);
+  if (n.type === 'effect') EDGES.push(['P', n.id]);
+});
+
+function initPos() {
+  const p = {};
+  const rowStart = (count, w, gap) => CX - (count * w + (count - 1) * gap) / 2;
+  const e0 = rowStart(effects.length, SIZE.effect[0], COL_GAP + 22);
+  effects.forEach((n, i) => p[n.id] = { x: e0 + i * (SIZE.effect[0] + COL_GAP + 22), y: ROW.effect });
+  p.P = { x: CX - SIZE.problem[0] / 2, y: ROW.problem };
+  const d0 = rowStart(directs.length, COL_W, COL_GAP);
+  directs.forEach((d, i) => {
+    const x = d0 + i * (COL_W + COL_GAP);
+    p[d.id] = { x, y: ROW.direct };
+    nodes.filter(n => n.parent === d.id).forEach((c, j) => {
+      p[c.id] = { x: x + IND_INDENT, y: ROW.indirect + j * (SIZE.indirect[1] + IND_GAP) };
+    });
+  });
+  return p;
+}
+
+/* ---------- estado ---------- */
+const S = { pos: initPos(), z: 1, px: 0, py: 0, sel: null };
+const vp = document.getElementById('vp');
+const world = document.getElementById('world');
+
+/* ---------- utilidades ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const edgeColor = ([a, b]) => COLORS[byId[a].type === 'problem' ? byId[b].type : byId[a].type].bd;
+
+function edgePath(a, b, pos) {
+  const A = byId[a], B = byId[b], pa = pos[a], pb = pos[b];
+  if (A.type === 'indirect') {
+    const spine = pb.x + SPINE_OFF;
+    const y = pa.y + SIZE.indirect[1] / 2;
+    return `M${pa.x} ${y} H${spine} V${pb.y + SIZE[B.type][1] + 7}`;
+  }
+  const sx = pa.x + SIZE[A.type][0] / 2, sy = pa.y;
+  const ex = pb.x + SIZE[B.type][0] / 2, ey = pb.y + SIZE[B.type][1] + 7;
+  const my = (sy + ey) / 2;
+  return `M${sx} ${sy} C${sx} ${my}, ${ex} ${my}, ${ex} ${ey}`;
+}
+
+function chain(sel) {
+  if (!sel) return null;
+  const set = new Set([sel]), n = byId[sel];
+  if (n.type === 'problem') { nodes.forEach(x => set.add(x.id)); return set; }
+  if (n.type === 'effect') { set.add('P'); return set; }
+  const down = id => EDGES.forEach(([a, b]) => { if (b === id && !set.has(a)) { set.add(a); down(a); } });
+  const up = id => EDGES.forEach(([a, b]) => { if (a === id && !set.has(b)) { set.add(b); up(b); } });
+  down(sel); up(sel);
+  return set;
+}
+
+function edgesSVG(pos, set, w, h, ox = 0, oy = 0) {
+  const defs = EDGES.map((e, i) => `<marker id="mk${i}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="${edgeColor(e)}"/></marker>`).join('');
+  const paths = EDGES.map((e, i) => {
+    const on = set && set.has(e[0]) && set.has(e[1]), dim = set && !on;
+    return `<path d="${edgePath(e[0], e[1], pos)}" fill="none" stroke="${edgeColor(e)}" stroke-width="${on ? 4 : 2.5}" stroke-linejoin="round" marker-end="url(#mk${i})" opacity="${dim ? .15 : 1}"/>`;
+  }).join('');
+  return `<svg class="edges" width="${w}" height="${h}" viewBox="${ox} ${oy} ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${paths}</svg>`;
+}
+
+function nodeHTML(n) {
+  const area = n.area ? `<span class="area">${esc(n.area)}</span>` : '';
+  const code = n.type === 'problem' ? `${n.id} · ${TYPE_LABEL.problem}` : n.id;
+  return `<div class="meta"><span>${esc(code)}</span>${area}</div><div class="txt">${esc(n.titulo)}</div>`;
+}
+
+function bandsHTML(w) {
+  const b = (y, label, soft) => `<div class="band-line${soft ? ' soft' : ''}" style="top:${y}px;width:${w}px"></div><div class="band-label${soft ? ' soft' : ''}" style="top:${y + 12}px">${label}</div>`;
+  return b(ROW.l1, '01 — Efectos') + b(ROW.l2, '02 — Problema central') + b(ROW.l3, '03 — Causas directas') + b(ROW.l4, '04 — Causas indirectas', true);
+}
+
+/* ---------- construcción del lienzo interactivo ---------- */
+world.style.width = WORLD_W + 'px';
+world.style.height = WORLD_H + 'px';
+world.innerHTML = bandsHTML(WORLD_W) + '<div id="edgeHost"></div>';
+const edgeHost = document.getElementById('edgeHost');
+const els = {};
+nodes.forEach(n => {
+  const el = document.createElement('div');
+  el.className = 'node ' + n.type;
+  el.tabIndex = 0;
+  el.setAttribute('role', 'button');
+  el.setAttribute('aria-label', `${TYPE_LABEL[n.type]} ${n.id}: ${n.titulo}`);
+  el.style.width = SIZE[n.type][0] + 'px';
+  el.style.height = SIZE[n.type][1] + 'px';
+  el.innerHTML = nodeHTML(n);
+  el.addEventListener('pointerdown', e => onNodeDown(n.id, e));
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(S.sel === n.id ? null : n.id); } });
+  world.appendChild(el);
+  els[n.id] = el;
+});
+
+function render() {
+  const set = chain(S.sel);
+  world.style.transform = `translate(${S.px}px,${S.py}px) scale(${S.z})`;
+  edgeHost.innerHTML = edgesSVG(S.pos, set, WORLD_W, WORLD_H);
+  nodes.forEach(n => {
+    const el = els[n.id], p = S.pos[n.id];
+    el.style.left = p.x + 'px';
+    el.style.top = p.y + 'px';
+    el.classList.toggle('dim', !!set && !set.has(n.id));
+    el.classList.toggle('selected', S.sel === n.id);
+  });
+  document.getElementById('zPct').textContent = Math.round(S.z * 100) + '%';
+  renderPop();
+}
+
+/* ---------- vista: ajustar, zoom y desplazamiento ---------- */
+function fit(resetPos) {
+  const w = vp.clientWidth, h = vp.clientHeight;
+  const narrow = w < 820;
+  const padL = narrow ? 12 : 24, padR = narrow ? 12 : 24, padT = 20, padB = narrow ? 150 : 130;
+  const z = Math.min((w - padL - padR) / WORLD_W, (h - padT - padB) / WORLD_H, 1.1);
+  S.z = Math.max(z, .2);
+  S.px = padL + (w - padL - padR - WORLD_W * S.z) / 2;
+  S.py = padT + (h - padT - padB - WORLD_H * S.z) / 2;
+  if (resetPos) { S.pos = initPos(); S.sel = null; }
+  render();
+}
+function zoomAt(cx, cy, f) {
+  const z = Math.max(.2, Math.min(2.5, S.z * f)), k = z / S.z;
+  S.px = cx - (cx - S.px) * k; S.py = cy - (cy - S.py) * k; S.z = z;
+  render();
+}
+const zoomCenter = f => zoomAt(vp.clientWidth / 2, vp.clientHeight / 2, f);
+vp.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = vp.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * .0015));
+}, { passive:false });
+document.getElementById('zIn').onclick = () => zoomCenter(1.2);
+document.getElementById('zOut').onclick = () => zoomCenter(1 / 1.2);
+document.getElementById('zReset').onclick = () => fit(true);
+window.addEventListener('resize', () => fit(false));
+
+let drag = null;
+function onNodeDown(id, e) {
+  if (e.button !== 0) return;
+  e.stopPropagation();
+  const p = S.pos[id];
+  drag = { kind:'node', id, sx:e.clientX, sy:e.clientY, ox:p.x, oy:p.y, moved:false };
+}
+vp.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  drag = { kind:'pan', sx:e.clientX, sy:e.clientY, ox:S.px, oy:S.py, moved:false };
+  vp.classList.add('panning');
+});
+window.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+  if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) {
+    drag.moved = true;
+    if (drag.kind === 'node') els[drag.id].classList.add('dragging');
+  }
+  if (!drag.moved) return;
+  if (drag.kind === 'node') S.pos[drag.id] = { x: drag.ox + dx / S.z, y: drag.oy + dy / S.z };
+  else { S.px = drag.ox + dx; S.py = drag.oy + dy; }
+  render();
+});
+window.addEventListener('pointerup', () => {
+  if (!drag) return;
+  const d = drag; drag = null;
+  vp.classList.remove('panning');
+  if (d.kind === 'node') {
+    els[d.id].classList.remove('dragging');
+    if (!d.moved) select(S.sel === d.id ? null : d.id);
+  } else if (!d.moved) select(null);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') select(null); });
+
+/* ---------- ventana de justificación ---------- */
+const pop = document.getElementById('pop');
+document.getElementById('popClose').onclick = () => select(null);
+pop.addEventListener('pointerdown', e => e.stopPropagation());
+function select(id) { S.sel = id; render(); }
+
+function renderPop() {
+  const n = S.sel && byId[S.sel];
+  pop.classList.toggle('open', !!n);
+  if (!n) return;
+  document.getElementById('popKicker').textContent = `${TYPE_LABEL[n.type]} · ${n.id}${n.area ? ' · ' + n.area : ''}`;
+  document.getElementById('popTitle').textContent = n.titulo;
+  document.getElementById('popText').textContent = n.why;
+  const nums = [...new Set((n.why.match(/\[(\d+)\]/g) || []).map(s => s.slice(1, -1)))].sort((a, b) => a - b);
+  document.getElementById('popRefsHead').style.display = nums.length ? '' : 'none';
+  document.getElementById('popRefs').innerHTML = nums.map(k => {
+    const t = esc(DATA.refs[k] || 'Referencia no encontrada en el documento de soporte.')
+      .replace(/(https?:\/\/[^\s]+?)(\.?\s|\.?$)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>$2');
+    return `<li><b>[${k}]</b> ${t}</li>`;
+  }).join('');
+  if (vp.clientWidth < 820) { pop.style.left = '12px'; pop.style.top = '76px'; return; }
+  const p = S.pos[n.id], sz = SIZE[n.type], vw = window.innerWidth, vh = window.innerHeight;
+  let left = S.px + (p.x + sz[0]) * S.z + 16;
+  if (left + 360 > vw - 12) left = S.px + p.x * S.z - 376;
+  left = Math.max(12, Math.min(left, vw - 372));
+  const top = Math.max(76, Math.min(64 + S.py + p.y * S.z, vh - Math.min(pop.offsetHeight, vh - 100) - 16));
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+}
+
+/* ---------- encabezado ---------- */
+document.getElementById('hdTeam').textContent = `${DATA.meta.curso} ${DATA.meta.equipo}`;
+document.getElementById('hdProject').textContent = DATA.meta.proyecto;
+document.getElementById('hdVersion').textContent = `Versión ${DATA.meta.version} · ${DATA.meta.fecha}`;
+
+/* ---------- exportación a PDF ---------- */
+const toast = msg => { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 3500); };
+
+function buildSheet() {
+  // límites reales del árbol (incluye elementos que se hayan arrastrado)
+  let minX = 0, minY = 0, maxX = WORLD_W, maxY = WORLD_H;
+  nodes.forEach(n => {
+    const p = S.pos[n.id], s = SIZE[n.type];
+    minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
+    maxX = Math.max(maxX, p.x + s[0]); maxY = Math.max(maxY, p.y + s[1] + 10);
+  });
+  const w = Math.ceil(maxX - minX), h = Math.ceil(maxY - minY);
+  const sw = (bg, bd) => `<span class="sw" style="background:${bg};border-color:${bd}"></span>`;
+  const sheet = document.getElementById('sheet');
+  sheet.style.width = (w + 128) + 'px';
+  sheet.innerHTML = `
+    <div class="s-head">
+      <div class="s-brand">
+        <img src="${document.querySelector('.brand-team img').src}" alt="">
+        <div><div class="s-kicker">${esc(DATA.meta.curso)} · ${esc(DATA.meta.equipo)}</div><h1>Árbol de problemas</h1><div class="s-kicker" style="margin-top:6px">${esc(DATA.meta.proyecto)}</div></div>
+      </div>
+      <div class="s-meta"><b>Versión ${esc(DATA.meta.version)}</b><br>${esc(DATA.meta.fecha)}<br>${esc(DATA.meta.institucion)}</div>
+    </div>
+    <div class="s-legend">
+      <div>${sw('#c1efc9','#3b9555')}Efectos</div><div>${sw('#6c4128','#45240f')}Problema central</div>
+      <div>${sw('#bbe7ff','#2d86c8')}Causa directa</div><div>${sw('#ffd6b5','#ba6826')}Causa indirecta</div>
+    </div>
+    <div class="s-world" style="width:${w}px;height:${h}px">
+      <div style="position:absolute;left:${-minX}px;top:${-minY}px;width:${WORLD_W}px;height:${WORLD_H}px">
+        ${bandsHTML(w + minX)}
+        ${edgesSVG(S.pos, null, WORLD_W, WORLD_H)}
+        ${nodes.map(n => `<div class="node ${n.type}" style="left:${S.pos[n.id].x}px;top:${S.pos[n.id].y}px;width:${SIZE[n.type][0]}px;height:${SIZE[n.type][1]}px">${nodeHTML(n)}</div>`).join('')}
+      </div>
+    </div>
+    <div class="s-foot"><span>${esc(DATA.meta.notaPie)}</span><span>Generado desde problem-tree.html</span></div>`;
+  return sheet;
+}
+
+document.getElementById('btnPdf').onclick = async () => {
+  const btn = document.getElementById('btnPdf');
+  if (!window.html2canvas || !window.jspdf) { toast('No se cargaron las librerías del PDF. Revisa tu conexión a internet y recarga la página.'); return; }
+  btn.disabled = true;
+  try {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const sheet = buildSheet();
+    const canvas = await html2canvas(sheet, { scale: 2.5, backgroundColor: '#ffffff', useCORS: true, logging: false });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a3', compress: true });
+    const pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight(), m = 8;
+    const k = Math.min((pw - 2 * m) / canvas.width, (ph - 2 * m) / canvas.height);
+    const iw = canvas.width * k, ih = canvas.height * k;
+    pdf.setProperties({ title: `Árbol de problemas v${DATA.meta.version}`, subject: DATA.meta.proyecto, author: DATA.meta.equipo });
+    pdf.addImage(canvas.toDataURL('image/jpeg', .95), 'JPEG', (pw - iw) / 2, (ph - ih) / 2, iw, ih);
+    pdf.save(`Arbol_de_problemas_v${DATA.meta.version}.pdf`);
+    sheet.innerHTML = '';
+  } catch (err) {
+    console.error(err);
+    toast('No se pudo generar el PDF. Abre la consola del navegador para ver el detalle.');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+fit(true);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());
+})();
+</script>
+</body>
+</html>
